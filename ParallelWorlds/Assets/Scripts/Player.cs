@@ -5,108 +5,146 @@ using UnityEngine.Networking;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class ToggleEvent : UnityEvent<bool>{}
+public class ToggleEvent : UnityEvent<bool> { }
+[System.Serializable]
+public class IntEvent : UnityEvent<int> { }
 
-public class Player : NetworkBehaviour 
+public class Player : NetworkBehaviour
 {
-	[SerializeField] ToggleEvent onToggleShared;
-	[SerializeField] ToggleEvent onToggleLocal;
-	[SerializeField] ToggleEvent onToggleRemote;
-	[SerializeField] float respawnTime = 5f;
+    [SerializeField] ToggleEvent onToggleShared;
+    [SerializeField] ToggleEvent onToggleLocal;
+    [SerializeField] ToggleEvent onToggleRemote;
+    [SerializeField] float respawnTime = 5f;
+    [SerializeField] IntEvent onSwitchUniverseShared;
 
-	GameObject mainCamera;
-	NetworkAnimator anim;
 
-	void Start()
-	{
-		anim = GetComponent<NetworkAnimator>();
-		// Main roaming camera of the scene
-		mainCamera = Camera.main.gameObject;
+    Camera mainCamera;
+    NetworkAnimator anim;
+    [SyncVar(hook = "OnPlayerUniverseChange")] int playerUniverse;
 
-		EnablePlayer ();
-	}
+    void Start()
+    {
+        anim = GetComponent<NetworkAnimator>();
+        // Main roaming camera of the scene
+        mainCamera = Camera.main;
 
-	private void Update() 
-	{
-		if (!isLocalPlayer)
-		{
-			return;
-		}
+        EnablePlayer();
 
-		anim.animator.SetFloat("Speed", Input.GetAxis("Vertical"));
-		anim.animator.SetFloat("Strafe", Input.GetAxis("Horizontal"));
-	}
+		// Initialize universe state for remote players (syncVar hooks are not called on variable initialization,
+		// so OnPlayerUniverseChange is not called for remote players who were already in game when localPlayer
+		// joined). 
+        if (!isLocalPlayer)
+        {
+            UpdatePlayerUniverse();
+        }
+    }
 
-	void DisablePlayer()
-	{
-		if (isLocalPlayer) 
-		{
-			PlayerCanvas.canvas.HideReticule ();
+    private void Update()
+    {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
 
-			// Activate roaming camera
-			mainCamera.SetActive (true);
-		}
+        anim.animator.SetFloat("Speed", Input.GetAxis("Vertical"));
+        anim.animator.SetFloat("Strafe", Input.GetAxis("Horizontal"));
+    }
 
-		onToggleShared.Invoke (false);
+    void DisablePlayer()
+    {
+        if (isLocalPlayer)
+        {
+            PlayerCanvas.canvas.HideReticule();
 
-		if (isLocalPlayer)
-		{
-			onToggleLocal.Invoke (false);
-		}
-		else
-		{
-			onToggleRemote.Invoke (false);
-		}
-	}
+            // Activate roaming camera
+            mainCamera.gameObject.SetActive(true);
+        }
 
-	void EnablePlayer ()
-	{
-		if (isLocalPlayer)
-		{
-			PlayerCanvas.canvas.Initialize ();
+        onToggleShared.Invoke(false);
 
-			// Deactivate roaming camera, switching to player camera
-			mainCamera.SetActive (false);
-		}
+        if (isLocalPlayer)
+        {
+            onToggleLocal.Invoke(false);
+        }
+        else
+        {
+            onToggleRemote.Invoke(false);
+        }
+    }
 
-		onToggleShared.Invoke (true);
+    void EnablePlayer()
+    {
+        Debug.Log("Enable Player net id: " + netId);
+        if (isLocalPlayer)
+        {
+            PlayerCanvas.canvas.Initialize();
 
-		if (isLocalPlayer)
-		{
-			onToggleLocal.Invoke (true);
-		}
-		else
-		{
-			onToggleRemote.Invoke (true);
-		}
-	}
+            // Deactivate roaming camera, switching to player camera
+            mainCamera.gameObject.SetActive(false);
 
-	public void Die()
-	{
-		if (isLocalPlayer)
-		{
-			PlayerCanvas.canvas.WriteGameStatusText ("You Died!");
-			PlayerCanvas.canvas.PlayDeathAudio ();
-			
-			anim.SetTrigger("Died");
-		}
-		
-		DisablePlayer ();
+            CmdGetNewUniverse();
+        }
 
-		Invoke ("Respawn", respawnTime);
-	}
+        onToggleShared.Invoke(true);
 
-	void Respawn()
-	{
-		if (isLocalPlayer) 
-		{
-			Transform spawn = NetworkManager.singleton.GetStartPosition ();
-			transform.position = spawn.position;
-			transform.rotation = spawn.rotation;
+        if (isLocalPlayer)
+        {
+            onToggleLocal.Invoke(true);
+        }
+        else
+        {
+            onToggleRemote.Invoke(true);
+        }
+    }
 
-			anim.SetTrigger("Restart");
-		}
+    public void Die()
+    {
+        if (isLocalPlayer)
+        {
+            PlayerCanvas.canvas.WriteGameStatusText("You Died!");
+            PlayerCanvas.canvas.PlayDeathAudio();
 
-		EnablePlayer ();
-	}
+            anim.SetTrigger("Died");
+        }
+
+        DisablePlayer();
+
+        Invoke("Respawn", respawnTime);
+    }
+
+    void Respawn()
+    {
+        if (isLocalPlayer)
+        {
+            Transform spawn = NetworkManager.singleton.GetStartPosition();
+            transform.position = spawn.position;
+            transform.rotation = spawn.rotation;
+
+            anim.SetTrigger("Restart");
+        }
+
+        EnablePlayer();
+    }
+
+    [Command]
+    void CmdGetNewUniverse()
+    {
+        playerUniverse = UniverseController.Instance.GetSpawnUniverse();
+    }
+
+    void OnPlayerUniverseChange(int universe)
+    {
+        playerUniverse = universe;
+
+        UpdatePlayerUniverse();
+    }
+
+    void UpdatePlayerUniverse()
+    {
+        if (playerUniverse != 0)
+        {
+            Debug.Log("Set Universe: " + playerUniverse + " for player net ID: " + netId);
+            onSwitchUniverseShared.Invoke(playerUniverse);
+        }
+    }
 }

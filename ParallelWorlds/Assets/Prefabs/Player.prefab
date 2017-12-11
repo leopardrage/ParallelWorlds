@@ -275,6 +275,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4369766988328054}
+  - component: {fileID: 114227988820957402}
   m_Layer: 0
   m_Name: M4A1 Sopmod
   m_TagString: Untagged
@@ -323,6 +324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4366351477255326}
   - component: {fileID: 114820343278880866}
+  - component: {fileID: 114156496030824144}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -2932,6 +2934,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 3
+--- !u!114 &114156496030824144
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1216301917818862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 910b517951575cf47aebbcae883dc01d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114227988820957402
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1180864153851800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 910b517951575cf47aebbcae883dc01d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114401543647572838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2947,7 +2971,6 @@ MonoBehaviour:
   gunAudio: {fileID: 0}
   impactPrefab: {fileID: 1017103872686626, guid: a2a5416429673ff4c87157c699a8842c,
     type: 2}
-  shotLight: {fileID: 0}
 --- !u!114 &114514107319803694
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3063,6 +3086,43 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: ToggleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   respawnTime: 5
+  onSwitchUniverseShared:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114156496030824144}
+        m_MethodName: SetUniverse
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 114227988820957402}
+        m_MethodName: SetUniverse
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 20527900932463432}
+        m_MethodName: set_cullingMask
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &114663565592659782
 MonoBehaviour:
   m_ObjectHideFlags: 1

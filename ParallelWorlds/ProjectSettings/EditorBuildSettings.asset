@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/Main.unity
+    path: Assets/_Scenes/Universe_A.unity
     guid: d35b38815fccaa844b338e82b11055c3
+  - enabled: 1
+    path: Assets/_Scenes/Universe_B_Additive.unity
+    guid: 750d57ad0c6f3e649bf608cdaceb7e35
+  - enabled: 1
+    path: Assets/CrackInTheStone/Scenes/UniverseA.unity
+    guid: 506baaee41cb1cd46852b344b462521d
+  - enabled: 1
+    path: Assets/CrackInTheStone/Scenes/UniverseB_Additive.unity
+    guid: 2acfe48382fa93e42b95d46e52b6aa34
   - enabled: 1
     path: Assets/SampleScenes/Scenes/NetworkLobby.unity
     guid: 3c0d76c55eed6214f9d3b070caede5d3
