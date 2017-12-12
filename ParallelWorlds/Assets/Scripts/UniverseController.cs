@@ -58,4 +58,9 @@ public class UniverseController : MonoBehaviour
         }
         return universe;
     }
+
+    public int GetOppositeUniverse(int currentUniverse)
+    {
+        return ((currentUniverse == UniverseController.Instance.UniverseB) ? UniverseController.Instance.UniverseA : UniverseController.Instance.UniverseB).value;
+    }
 }

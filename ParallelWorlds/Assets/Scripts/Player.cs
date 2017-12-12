@@ -6,8 +6,6 @@ using UnityEngine.Events;
 
 [System.Serializable]
 public class ToggleEvent : UnityEvent<bool> { }
-[System.Serializable]
-public class IntEvent : UnityEvent<int> { }
 
 public class Player : NetworkBehaviour
 {
@@ -15,12 +13,10 @@ public class Player : NetworkBehaviour
     [SerializeField] ToggleEvent onToggleLocal;
     [SerializeField] ToggleEvent onToggleRemote;
     [SerializeField] float respawnTime = 5f;
-    [SerializeField] IntEvent onSwitchUniverseShared;
 
 
     Camera mainCamera;
     NetworkAnimator anim;
-    [SyncVar(hook = "OnPlayerUniverseChange")] int playerUniverse;
 
     void Start()
     {
@@ -29,14 +25,6 @@ public class Player : NetworkBehaviour
         mainCamera = Camera.main;
 
         EnablePlayer();
-
-		// Initialize universe state for remote players (syncVar hooks are not called on variable initialization,
-		// so OnPlayerUniverseChange is not called for remote players who were already in game when localPlayer
-		// joined). 
-        if (!isLocalPlayer)
-        {
-            UpdatePlayerUniverse();
-        }
     }
 
     private void Update()
@@ -81,8 +69,6 @@ public class Player : NetworkBehaviour
 
             // Deactivate roaming camera, switching to player camera
             mainCamera.gameObject.SetActive(false);
-
-            CmdGetNewUniverse();
         }
 
         onToggleShared.Invoke(true);
@@ -124,27 +110,5 @@ public class Player : NetworkBehaviour
         }
 
         EnablePlayer();
-    }
-
-    [Command]
-    void CmdGetNewUniverse()
-    {
-        playerUniverse = UniverseController.Instance.GetSpawnUniverse();
-    }
-
-    void OnPlayerUniverseChange(int universe)
-    {
-        playerUniverse = universe;
-
-        UpdatePlayerUniverse();
-    }
-
-    void UpdatePlayerUniverse()
-    {
-        if (playerUniverse != 0)
-        {
-            Debug.Log("Set Universe: " + playerUniverse + " for player net ID: " + netId);
-            onSwitchUniverseShared.Invoke(playerUniverse);
-        }
     }
 }
