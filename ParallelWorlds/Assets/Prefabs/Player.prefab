@@ -1039,6 +1039,7 @@ GameObject:
   - component: {fileID: 20527900932463432}
   - component: {fileID: 81054680649176634}
   - component: {fileID: 124066392844014914}
+  - component: {fileID: 114737233416241764}
   m_Layer: 0
   m_Name: FirstPersonCharacter
   m_TagString: MainCamera
@@ -3020,61 +3021,62 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: IntEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  _vignette: {fileID: 114737233416241764}
   _camera: {fileID: 20527900932463432}
-  _innerVingette:
+  _innerVignette:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.0038455864
-      value: 0.90908813
+      time: 0
+      value: 0.29938507
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.7989139
-      value: 0.002746664
+      time: 0.7987183
+      value: -0.00021917
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.8989749
-      value: 0.9970783
-      inSlope: -0.01790819
-      outSlope: -0.01790819
+      time: 0.89977014
+      value: 0.35016596
+      inSlope: 1.3204906
+      outSlope: 1.3204906
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9228668
+      value: 0.29499054
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  _outerVingette:
+  _outerVignette:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
       time: 0
-      value: 0.94628906
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.7974678
-      value: -0.043053508
-      inSlope: 0.031888485
-      outSlope: 0.031888485
+      time: 0.8012805
+      value: 0.7999004
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.9000027
-      value: 0.99775773
-      inSlope: -0.022947788
-      outSlope: -0.022947788
+      time: 0.8997496
+      value: 1.04936
+      inSlope: 1.3171619
+      outSlope: 1.3171619
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9159775
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -3091,8 +3093,8 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.8048399
-      value: 0.0020275787
+      time: 0.79971296
+      value: 0.00062377006
       inSlope: 0.01707306
       outSlope: 0.01707306
       tangentMode: 0
@@ -3129,30 +3131,6 @@ MonoBehaviour:
     - serializedVersion: 2
       time: 0.9989624
       value: 60.260563
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  _timeScale:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.7987179
-      value: 0.0013692311
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -3307,6 +3285,21 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 15
   m_InterpolateMovement: 1
+--- !u!114 &114737233416241764
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1791312087781328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d20aa789b6a82408689406bffb9832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shader: {fileID: 4800000, guid: 4bad137ed4d1d7d4881c33ab6ac80ed7, type: 3}
+  MinRadius: 0.3
+  MaxRadius: 1
+  Saturation: 1
 --- !u!114 &114742742197960214
 MonoBehaviour:
   m_ObjectHideFlags: 1

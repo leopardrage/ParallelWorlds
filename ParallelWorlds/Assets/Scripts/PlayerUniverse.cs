@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 public class IntEvent : UnityEvent<int> { }
 public class PlayerUniverse : NetworkBehaviour
 {
+    [System.Serializable]
     public struct PlayerUniverseState
     {
         public enum TransitionState
@@ -22,8 +23,8 @@ public class PlayerUniverse : NetworkBehaviour
             this.transitionState = transitionState;
         }
 
-        public int universe { get; private set; }
-        public TransitionState transitionState { get; private set; }
+        public int universe;
+        public TransitionState transitionState;
     }
 
     [SerializeField] IntEvent onSwitchUniverseShared;
@@ -31,11 +32,12 @@ public class PlayerUniverse : NetworkBehaviour
     [SyncVar(hook = "OnPlayerUniverseStateChange")] PlayerUniverseState playerUniverseState;
 
     [Header("Swap Effect Stuff")]
-    // [SerializeField] private Vingette _vingette;
+    [SerializeField]
+    private Vignette _vignette;
     [SerializeField]
     private Camera _camera;
-    [SerializeField] private AnimationCurve _innerVingette;
-    [SerializeField] private AnimationCurve _outerVingette;
+    [SerializeField] private AnimationCurve _innerVignette;
+    [SerializeField] private AnimationCurve _outerVignette;
     [SerializeField] private AnimationCurve _saturation;
     [SerializeField] private AnimationCurve _fov;
     [SerializeField] private AudioClip _swapAudioClip;
@@ -208,8 +210,8 @@ public class PlayerUniverse : NetworkBehaviour
     private void ApplyEffect(float t)
     {
         _camera.fieldOfView = _fov.Evaluate(t);
-        /* _vingette.MinRadius = _innerVingette.Evaluate(t);
-        _vingette.MaxRadius = _outerVingette.Evaluate(t);
-        _vingette.Saturation = _saturation.Evaluate(t); */
+        _vignette.MinRadius = _innerVignette.Evaluate(t);
+        _vignette.MaxRadius = _outerVignette.Evaluate(t);
+        _vignette.Saturation = _saturation.Evaluate(t);
     }
 }
