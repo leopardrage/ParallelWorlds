@@ -3138,6 +3138,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   _swapAudioClip: {fileID: 8300000, guid: a8237a7582737af4d978168fe5d1889d, type: 3}
+  _body: {fileID: 114820343278880866}
 --- !u!114 &114514107319803694
 MonoBehaviour:
   m_ObjectHideFlags: 1

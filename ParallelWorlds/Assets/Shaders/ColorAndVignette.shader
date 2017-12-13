@@ -39,7 +39,7 @@ Shader "Hidden/ColorAndVingette"
 			}
 
 			sampler2D _MainTex;
-			half4 _MainTex_TexelSize;
+			half4 _MainTex_TexelSize; // Set by Unity as (1 / <width of _MainTex>, 1 / <height of _MainTex>, <width of _MainTex>, <height of _MainTex>)
 			half _MinRadius;
 			half _MaxRadius;
 			half _Saturation;

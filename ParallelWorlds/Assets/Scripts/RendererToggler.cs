@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RendererToggler : MonoBehaviour 
+public class RendererToggler : MonoBehaviour
 {
     [SerializeField] float turnOnDelay = .1f;
     [SerializeField] float turnOffDelay = 3.5f;
@@ -8,47 +8,53 @@ public class RendererToggler : MonoBehaviour
 
     Renderer[] renderers;
 
-    void Awake () 
+    void Awake()
     {
-        renderers = GetComponentsInChildren<Renderer> (true); 
+        renderers = GetComponentsInChildren<Renderer>(true);
 
         if (enabledOnLoad)
-            EnableRenderers ();
+            EnableRenderers();
         else
-            DisableRenderers ();
+            DisableRenderers();
     }
 
     //Method used by our Unity events to show and hide the player
     public void ToggleRenderersDelayed(bool isOn)
     {
         if (isOn)
-            Invoke ("EnableRenderers", turnOnDelay);
+            Invoke("EnableRenderers", turnOnDelay);
         else
-            Invoke ("DisableRenderers", turnOffDelay);
+            Invoke("DisableRenderers", turnOffDelay);
     }
 
     public void EnableRenderers()
     {
-        for (int i = 0; i < renderers.Length; i++) 
+        for (int i = 0; i < renderers.Length; i++)
         {
-            renderers [i].enabled = true;
+            renderers[i].enabled = true;
         }
     }
 
     public void DisableRenderers()
     {
-        for (int i = 0; i < renderers.Length; i++) 
+        for (int i = 0; i < renderers.Length; i++)
         {
-            renderers [i].enabled = false;
+            renderers[i].enabled = false;
         }
     }
 
     //Will be used to change the color of the players for different options
     public void ChangeColor(Color newColor)
     {
-        for (int i = 0; i < renderers.Length; i++) 
+        // Check needed in case it is called before Awake by another script's
+        // Awake or OnEnable method (because Unity call Awake, OnEnable and then
+        // go for another script...)
+        if (renderers != null)
         {
-            renderers [i].material.color = newColor;
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].material.color = newColor;
+            }
         }
     }
 }

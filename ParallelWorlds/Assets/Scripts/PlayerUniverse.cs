@@ -41,6 +41,8 @@ public class PlayerUniverse : NetworkBehaviour
     [SerializeField] private AnimationCurve _saturation;
     [SerializeField] private AnimationCurve _fov;
     [SerializeField] private AudioClip _swapAudioClip;
+    // TODO: remove (Just to test remote swap effect logic correctness)
+    [SerializeField] private RendererToggler _body;
 
     private AudioSource _audio;
     private readonly float _swapTime = 0.85f;
@@ -133,23 +135,16 @@ public class PlayerUniverse : NetworkBehaviour
             }
             else
             {
-                if (isLocalPlayer)
+                if (playerUniverseState.transitionState == PlayerUniverseState.TransitionState.SwapOut)
                 {
-                    if (playerUniverseState.transitionState == PlayerUniverseState.TransitionState.SwapOut)
-                    {
-                        Debug.Log("Player net ID: " + netId + "swapping out of universe: " + playerUniverseState.universe);
-                        StartCoroutine("SwapOutAsync");
-                    }
-                    else
-                    {
-                        Debug.Log("Player net ID: " + netId + " swapping in universe: " + playerUniverseState.universe);
-                        onSwitchUniverseShared.Invoke(playerUniverseState.universe);
-                        StartCoroutine("SwapInAsync");
-                    }
+                    Debug.Log("Player net ID: " + netId + "swapping out of universe: " + playerUniverseState.universe);
+                    StartCoroutine("SwapOutAsync");
                 }
                 else
                 {
-                    // TODO: Add transition effect as seen from other players
+                    Debug.Log("Player net ID: " + netId + " swapping in universe: " + playerUniverseState.universe);
+                    onSwitchUniverseShared.Invoke(playerUniverseState.universe);
+                    StartCoroutine("SwapInAsync");
                 }
             }
         }
@@ -170,11 +165,13 @@ public class PlayerUniverse : NetworkBehaviour
 
         if (playerUniverseState.transitionState == PlayerUniverseState.TransitionState.SwapOut)
         {
-            ApplyEffect(_swapTime);
+            ApplyEffectLocal(_swapTime);
+            ApplyEffectRemote(_swapTime);
         }
         else
         {
-            ApplyEffect(1.0f);
+            ApplyEffectLocal(1.0f);
+            ApplyEffectRemote(1.0f);
         }
     }
 
@@ -187,31 +184,71 @@ public class PlayerUniverse : NetworkBehaviour
 
         for (float t = 0; t < _swapTime; t += Time.unscaledDeltaTime * 1.2f)
         {
-            ApplyEffect(t);
+            if (isLocalPlayer)
+            {
+                ApplyEffectLocal(t);
+            }
+            else
+            {
+                ApplyEffectRemote(t);
+            }
 
             yield return null;
         }
 
-        CmdSwapToOppositeUniverse();
+        if (isLocalPlayer)
+        {
+            CmdSwapToOppositeUniverse();
+        }
     }
 
     private IEnumerator SwapInAsync()
     {
         for (float t = _swapTime; t < 1.0f; t += Time.unscaledDeltaTime * 1.2f)
         {
-            ApplyEffect(t);
+            if (isLocalPlayer)
+            {
+                ApplyEffectLocal(t);
+            }
+            else
+            {
+                ApplyEffectRemote(t);
+            }
 
             yield return null;
         }
 
-        CmdStopSwapToOppositeUniverse();
+        if (isLocalPlayer)
+        {
+            CmdStopSwapToOppositeUniverse();
+        }
     }
 
-    private void ApplyEffect(float t)
+    private void ApplyEffectLocal(float t)
     {
         _camera.fieldOfView = _fov.Evaluate(t);
         _vignette.MinRadius = _innerVignette.Evaluate(t);
         _vignette.MaxRadius = _outerVignette.Evaluate(t);
         _vignette.Saturation = _saturation.Evaluate(t);
+    }
+
+    private void ApplyEffectRemote(float t)
+    {
+        // TODO: replace with cooler effect
+        if (_body != null)
+        {
+            if (t < _swapTime)
+            {
+                _body.ChangeColor(Color.magenta);
+            }
+            else if (t < 1.0f)
+            {
+                _body.ChangeColor(Color.green);
+            }
+            else
+            {
+                _body.ChangeColor(Color.white);
+            }
+        }
     }
 }
