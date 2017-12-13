@@ -42,7 +42,9 @@ public class PlayerUniverse : NetworkBehaviour
     [SerializeField] private AnimationCurve _fov;
     [SerializeField] private AudioClip _swapAudioClip;
     // TODO: remove (Just to test remote swap effect logic correctness)
-    [SerializeField] private RendererToggler _body;
+    [SerializeField] private SwapEffectRemote _body;
+
+    [SerializeField] private SwapEffectRemote _gun;
 
     private AudioSource _audio;
     private readonly float _swapTime = 0.85f;
@@ -166,12 +168,12 @@ public class PlayerUniverse : NetworkBehaviour
         if (playerUniverseState.transitionState == PlayerUniverseState.TransitionState.SwapOut)
         {
             ApplyEffectLocal(_swapTime);
-            ApplyEffectRemote(_swapTime);
+            ApplyEffectRemote(_swapTime, false);
         }
         else
         {
             ApplyEffectLocal(1.0f);
-            ApplyEffectRemote(1.0f);
+            ApplyEffectRemote(1.0f, false);
         }
     }
 
@@ -190,7 +192,7 @@ public class PlayerUniverse : NetworkBehaviour
             }
             else
             {
-                ApplyEffectRemote(t);
+                ApplyEffectRemote(t, true);
             }
 
             yield return null;
@@ -212,7 +214,7 @@ public class PlayerUniverse : NetworkBehaviour
             }
             else
             {
-                ApplyEffectRemote(t);
+                ApplyEffectRemote(t, false);
             }
 
             yield return null;
@@ -232,23 +234,15 @@ public class PlayerUniverse : NetworkBehaviour
         _vignette.Saturation = _saturation.Evaluate(t);
     }
 
-    private void ApplyEffectRemote(float t)
+    private void ApplyEffectRemote(float t, bool reverse)
     {
-        // TODO: replace with cooler effect
         if (_body != null)
         {
-            if (t < _swapTime)
-            {
-                _body.ChangeColor(Color.magenta);
-            }
-            else if (t < 1.0f)
-            {
-                _body.ChangeColor(Color.green);
-            }
-            else
-            {
-                _body.ChangeColor(Color.white);
-            }
+            _body.ApplyEffect(t, reverse);
+        }
+        if (_gun != null)
+        {
+            _gun.ApplyEffect(t, reverse);
         }
     }
 }
