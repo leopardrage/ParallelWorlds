@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class SwapEffectRemote : MonoBehaviour
 {
-    Renderer[] renderers;
+    private Renderer[] _renderers;
 
-    void Awake()
+    private void Awake()
     {
-        renderers = GetComponentsInChildren<Renderer>(true);
+        _renderers = GetComponentsInChildren<Renderer>(true);
     }
 
     //Will be used to change the color of the players for different options
@@ -15,11 +15,11 @@ public class SwapEffectRemote : MonoBehaviour
         // Check needed in case it is called before Awake by another script's
         // Awake or OnEnable method (because Unity call Awake, OnEnable and then
         // go for another script...)
-        if (renderers != null)
+        if (_renderers != null)
         {
-            for (int i = 0; i < renderers.Length; i++)
+            for (int i = 0; i < _renderers.Length; i++)
             {
-                foreach (Material material in renderers[i].materials)
+                foreach (Material material in _renderers[i].materials)
                 {
                     if (reverse)
                     {

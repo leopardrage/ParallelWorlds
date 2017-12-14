@@ -5,27 +5,24 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Vignette : MonoBehaviour
 {
-    [SerializeField]
-    private Shader _shader;
-    [Range(0, 1)]
-    public float MinRadius = 0.3f;
-    [Range(0, 1)]
-    public float MaxRadius = 1.0f;
-    [Range(0, 1)]
-    public float Saturation = 1.0f;
+    [Range(0, 1)] public float minRadius = 0.3f;
+    [Range(0, 1)] public float maxRadius = 1.0f;
+    [Range(0, 1)] public float saturation = 1.0f;
 
-    Material _material;
+    [SerializeField] private Shader _shader;
 
-    void OnEnable()
+    private Material _material;
+
+    private void OnEnable()
     {
         _material = new Material(_shader);
     }
 
-    void OnRenderImage(RenderTexture src, RenderTexture dst)
+    private void OnRenderImage(RenderTexture src, RenderTexture dst)
     {
-        _material.SetFloat("_MinRadius", MinRadius);
-        _material.SetFloat("_MaxRadius", MaxRadius);
-        _material.SetFloat("_Saturation", Saturation);
+        _material.SetFloat("_MinRadius", minRadius);
+        _material.SetFloat("_MaxRadius", maxRadius);
+        _material.SetFloat("_Saturation", saturation);
 
         Graphics.Blit(src, dst, _material, 0);
     }

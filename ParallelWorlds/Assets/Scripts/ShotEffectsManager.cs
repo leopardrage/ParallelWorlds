@@ -1,58 +1,64 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ShotEffectsManager : MonoBehaviour 
+public class ShotEffectsManager : MonoBehaviour, IUniverseObserver
 {
-	[SerializeField] ParticleSystem muzzleFlash;
-	[SerializeField] AudioSource gunAudio;
-	[SerializeField] GameObject impactPrefab;
+    [SerializeField] private ParticleSystem _muzzleFlash;
+    [SerializeField] private AudioSource _gunAudio;
+    [SerializeField] private GameObject _impactPrefab;
 
-	ParticleSystem impactEffect;
-	int universeLayer;
+    private ParticleSystem _impactEffect;
+    private int _universeLayer;
 
-	//Create the impact effect for our shots
-	public void Initialize()
-	{
-		if (impactPrefab != null) {
-			impactEffect = Instantiate(impactPrefab).GetComponent<ParticleSystem>();
-		}
-		UpdateUniverseSettings();
-	}
-
-	//Play muzzle flash and audio
-	public void PlayShotEffects()
-	{
-		if (muzzleFlash != null) {
-			muzzleFlash.Stop (true);
-			muzzleFlash.Play (true);
-		}
-		if (gunAudio != null) {
-			gunAudio.Stop ();
-			gunAudio.Play ();
-		}
-	}
-
-	//Play impact effect and target position
-	public void PlayImpactEffect(Vector3 impactPosition)
-	{
-		if (impactEffect != null) {
-			impactEffect.transform.position = impactPosition;   
-			impactEffect.Stop ();
-			impactEffect.Play ();
-		}
-	}
-
-	public void SetUniverseSettings(UniverseLayerSettings universe)
+    //Create the impact effect for our shots
+    public void Initialize()
     {
-        universeLayer = universe.layer;
-		UpdateUniverseSettings();
+        if (_impactPrefab != null)
+        {
+            _impactEffect = Instantiate(_impactPrefab).GetComponent<ParticleSystem>();
+        }
+        UpdateUniverseSettings();
     }
 
-	private void UpdateUniverseSettings()
-	{
-		if (impactEffect != null)
-		{
-			impactEffect.gameObject.layer = universeLayer;
-		}
-	}
+    //Play muzzle flash and audio
+    public void PlayShotEffects()
+    {
+        if (_muzzleFlash != null)
+        {
+            _muzzleFlash.Stop(true);
+            _muzzleFlash.Play(true);
+        }
+        if (_gunAudio != null)
+        {
+            _gunAudio.Stop();
+            _gunAudio.Play();
+        }
+    }
+
+    //Play impact effect and target position
+    public void PlayImpactEffect(Vector3 impactPosition)
+    {
+        if (_impactEffect != null)
+        {
+            _impactEffect.transform.position = impactPosition;
+            _impactEffect.Stop();
+            _impactEffect.Play();
+        }
+    }
+
+    // ------------- IUniverseObserver ---------------
+
+    public void SetUniverseSettings(UniverseLayerSettings universe)
+    {
+        _universeLayer = universe.layer;
+        UpdateUniverseSettings();
+    }
+
+    private void UpdateUniverseSettings()
+    {
+        if (_impactEffect != null)
+        {
+            _impactEffect.gameObject.layer = _universeLayer;
+        }
+    }
 }

@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class UniverseSetter : MonoBehaviour
+public class UniverseSetter : MonoBehaviour, IUniverseObserver
 {
+    // ------------- IUniverseObserver ---------------
     public void SetUniverseSettings(UniverseLayerSettings universe)
     {
         SetLayerRecursively(gameObject, universe.layer);

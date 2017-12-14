@@ -9,20 +9,19 @@ public class ToggleEvent : UnityEvent<bool> { }
 
 public class Player : NetworkBehaviour
 {
-    [SerializeField] ToggleEvent onToggleShared;
-    [SerializeField] ToggleEvent onToggleLocal;
-    [SerializeField] ToggleEvent onToggleRemote;
-    [SerializeField] float respawnTime = 5f;
+    [SerializeField] private ToggleEvent _onToggleShared;
+    [SerializeField] private ToggleEvent _onToggleLocal;
+    [SerializeField] private ToggleEvent _onToggleRemote;
+    [SerializeField] private float _respawnTime = 5f;
 
+    private Camera _mainCamera;
+    private NetworkAnimator _anim;
 
-    Camera mainCamera;
-    NetworkAnimator anim;
-
-    void Start()
+    private void Start()
     {
-        anim = GetComponent<NetworkAnimator>();
+        _anim = GetComponent<NetworkAnimator>();
         // Main roaming camera of the scene
-        mainCamera = Camera.main;
+        _mainCamera = Camera.main;
 
         EnablePlayer();
     }
@@ -34,33 +33,33 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        anim.animator.SetFloat("Speed", Input.GetAxis("Vertical"));
-        anim.animator.SetFloat("Strafe", Input.GetAxis("Horizontal"));
+        _anim.animator.SetFloat("Speed", Input.GetAxis("Vertical"));
+        _anim.animator.SetFloat("Strafe", Input.GetAxis("Horizontal"));
     }
 
-    void DisablePlayer()
+    private void DisablePlayer()
     {
         if (isLocalPlayer)
         {
             PlayerCanvas.canvas.HideReticule();
 
             // Activate roaming camera
-            mainCamera.gameObject.SetActive(true);
+            _mainCamera.gameObject.SetActive(true);
         }
 
-        onToggleShared.Invoke(false);
+        _onToggleShared.Invoke(false);
 
         if (isLocalPlayer)
         {
-            onToggleLocal.Invoke(false);
+            _onToggleLocal.Invoke(false);
         }
         else
         {
-            onToggleRemote.Invoke(false);
+            _onToggleRemote.Invoke(false);
         }
     }
 
-    void EnablePlayer()
+    private void EnablePlayer()
     {
         Debug.Log("Enable Player net id: " + netId);
         if (isLocalPlayer)
@@ -68,18 +67,18 @@ public class Player : NetworkBehaviour
             PlayerCanvas.canvas.Initialize();
 
             // Deactivate roaming camera, switching to player camera
-            mainCamera.gameObject.SetActive(false);
+            _mainCamera.gameObject.SetActive(false);
         }
 
-        onToggleShared.Invoke(true);
+        _onToggleShared.Invoke(true);
 
         if (isLocalPlayer)
         {
-            onToggleLocal.Invoke(true);
+            _onToggleLocal.Invoke(true);
         }
         else
         {
-            onToggleRemote.Invoke(true);
+            _onToggleRemote.Invoke(true);
         }
     }
 
@@ -90,15 +89,15 @@ public class Player : NetworkBehaviour
             PlayerCanvas.canvas.WriteGameStatusText("You Died!");
             PlayerCanvas.canvas.PlayDeathAudio();
 
-            anim.SetTrigger("Died");
+            _anim.SetTrigger("Died");
         }
 
         DisablePlayer();
 
-        Invoke("Respawn", respawnTime);
+        Invoke("Respawn", _respawnTime);
     }
 
-    void Respawn()
+    private void Respawn()
     {
         if (isLocalPlayer)
         {
@@ -106,7 +105,7 @@ public class Player : NetworkBehaviour
             transform.position = spawn.position;
             transform.rotation = spawn.rotation;
 
-            anim.SetTrigger("Restart");
+            _anim.SetTrigger("Restart");
         }
 
         EnablePlayer();

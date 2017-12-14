@@ -17,7 +17,6 @@ public class UniverseController : MonoBehaviour
         Random,
         RoundRobin
     }
-    private static UniverseController _instance;
 
     public static UniverseController Instance
     {
@@ -32,13 +31,14 @@ public class UniverseController : MonoBehaviour
         }
     }
 
-    [SerializeField] private UniversePickMode universePickMode;
+    private static UniverseController _instance;
 
-    private Universe lastUniverse = Universe.UniverseUndefined;
-
+    [SerializeField] private UniversePickMode _universePickMode = UniversePickMode.RoundRobin;
     [SerializeField] private int _additiveSceneBuildIndex;
 
-    void Awake()
+    private Universe _lastUniverse = Universe.UniverseUndefined;
+
+    private void Awake()
     {
         SceneManager.LoadScene(_additiveSceneBuildIndex, LoadSceneMode.Additive);
     }
@@ -46,14 +46,14 @@ public class UniverseController : MonoBehaviour
     public Universe GetSpawnUniverse()
     {
         Universe universe = 0;
-        switch (universePickMode)
+        switch (_universePickMode)
         {
             case UniversePickMode.Random:
                 universe = ((Random.Range(0, 2) == 0) ? Universe.UniverseA : Universe.UniverseB);
                 break;
             case UniversePickMode.RoundRobin:
-                lastUniverse = ((lastUniverse == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB);
-                universe = lastUniverse;
+                _lastUniverse = ((_lastUniverse == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB);
+                universe = _lastUniverse;
                 break;
         }
         return universe;

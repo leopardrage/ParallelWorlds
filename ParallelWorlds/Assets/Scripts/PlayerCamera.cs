@@ -1,14 +1,16 @@
 using UnityEngine;
 
-[RequireComponent (typeof(Camera))]
-public class PlayerCamera : MonoBehaviour
+[RequireComponent(typeof(Camera))]
+public class PlayerCamera : MonoBehaviour, IUniverseObserver
 {
     [SerializeField] private Camera _camera;
 
-    private void Reset() 
+    private void Reset()
     {
         _camera = GetComponent<Camera>();
     }
+
+    // ------------- IUniverseObserver ---------------
 
     public void SetUniverseSettings(UniverseLayerSettings universe)
     {

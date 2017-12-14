@@ -5,65 +5,64 @@ using UnityEngine.Networking;
 
 public class PlayerHealth : NetworkBehaviour
 {
-	[SerializeField] int maxHealth = 3;
-	[SyncVar (hook = "OnHealthChanged")] int health;
+    [SerializeField] private int _maxHealth = 3;
+    [SyncVar(hook = "OnHealthChanged")] private int _health;
 
-	Player player;
+    private Player _player;
 
+    private void Awake()
+    {
+        _player = GetComponent<Player>();
+    }
 
-	void Awake()
-	{
-		player = GetComponent<Player> ();
-	}
+    // This method will exist only on the server
+    [ServerCallback]
+    private void OnEnable()
+    {
+        _health = _maxHealth;
+    }
 
-	// This method will exist only on the server
-	[ServerCallback]
-	void OnEnable()
-	{
-		health = maxHealth;
-	}
+    // Ensure that this method will be called only by the server
+    [Server]
+    public bool TakeDamage()
+    {
+        bool died = false;
 
-	// Ensure that this method will be called only by the server
-	[Server]
-	public bool TakeDamage()
-	{
-		bool died = false;
+        // if health is already 0, it means that the player has already died before, he did not JUST died, so we return false
+        if (_health <= 0)
+        {
+            return died;
+        }
 
-		// if health is already 0, it means that the player has already died before, he did not JUST died, so we return false
-		if (health <= 0) 
-		{
-			return died;
-		}
+        _health--;
+        died = _health <= 0;
 
-		health--;
-		died = health <= 0;
+        RpcTakeDamage(died);
 
-		RpcTakeDamage (died);
+        return died;
+    }
 
-		return died;
-	}
+    [ClientRpc]
+    private void RpcTakeDamage(bool died)
+    {
+        if (isLocalPlayer)
+        {
+            PlayerCanvas.canvas.FlashDamageEffect();
+        }
 
-	[ClientRpc]
-	void RpcTakeDamage(bool died)
-	{
-		if (isLocalPlayer)
-		{
-			PlayerCanvas.canvas.FlashDamageEffect ();
-		}
+        if (died)
+        {
+            _player.Die();
+        }
+    }
 
-		if (died) 
-		{
-			player.Die ();
-		}
-	}
+    private void OnHealthChanged(int value)
+    {
+        _health = value;
 
-	void OnHealthChanged(int value)
-	{
-		health = value;
-
-		if (isLocalPlayer)
-		{
-			PlayerCanvas.canvas.SetHealth (value);
-		}
-	}
+        if (isLocalPlayer)
+        {
+            PlayerCanvas.canvas.SetHealth(value);
+        }
+    }
 }

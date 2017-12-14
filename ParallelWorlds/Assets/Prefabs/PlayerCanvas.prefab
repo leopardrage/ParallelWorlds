@@ -450,13 +450,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a96c4e7c3749abd46a491da32bc1428f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reticule: {fileID: 114321359424155114}
-  damageImage: {fileID: 114250082792044470}
-  gameStatusText: {fileID: 114076723029060830}
-  healthValue: {fileID: 114502021107824010}
-  killsValue: {fileID: 114891685394640586}
-  logText: {fileID: 114981446553045078}
-  deathAudio: {fileID: 82685488556130606}
+  _reticule: {fileID: 114321359424155114}
+  _damageImage: {fileID: 114250082792044470}
+  _gameStatusText: {fileID: 114076723029060830}
+  _healthValue: {fileID: 114502021107824010}
+  _killsValue: {fileID: 114891685394640586}
+  _logText: {fileID: 114981446553045078}
+  _deathAudio: {fileID: 82685488556130606}
 --- !u!114 &114250082792044470
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -468,10 +468,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c32ebddd296c0014db04593f939bfc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 15
-  groupToFade: {fileID: 225812359911121634}
-  startVisible: 0
-  startWithFade: 0
+  _fadeSpeed: 1
+  _groupToFade: {fileID: 225812359911121634}
+  _startVisible: 0
+  _startWithFade: 0
 --- !u!114 &114274856968089296
 MonoBehaviour:
   m_ObjectHideFlags: 1

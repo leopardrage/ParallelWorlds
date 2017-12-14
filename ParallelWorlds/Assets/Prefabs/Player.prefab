@@ -3024,7 +3024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 633f3c7ef0b60c047b35b8a8f283a559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 3
+  _maxHealth: 3
 --- !u!114 &114401543647572838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3036,9 +3036,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa5118c3d50a6748a5ff0fd1416be3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzleFlash: {fileID: 198623224013155142}
-  gunAudio: {fileID: 82260483807388898}
-  impactPrefab: {fileID: 1017103872686626, guid: a2a5416429673ff4c87157c699a8842c,
+  _muzzleFlash: {fileID: 198623224013155142}
+  _gunAudio: {fileID: 82260483807388898}
+  _impactPrefab: {fileID: 1017103872686626, guid: a2a5416429673ff4c87157c699a8842c,
     type: 2}
 --- !u!114 &114418032955175180
 MonoBehaviour:
@@ -3051,7 +3051,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6265f186edc7ece43b8c79046bacced6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onSwitchUniverseShared:
+  playerUniverseState:
+    universe: 0
+    transitionState: 0
+  _onSwitchUniverseShared:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114639923063698534}
@@ -3100,9 +3103,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UniverseChangeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  playerUniverseState:
-    universe: 0
-    transitionState: 0
   _vignette: {fileID: 114737233416241764}
   _camera: {fileID: 20527900932463432}
   _innerVignette:
@@ -3244,9 +3244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aa6da17fc2f28a4ba321b2de100941f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotCooldown: 0.3
-  firePosition: {fileID: 4980383626794108}
-  shotEffects: {fileID: 114401543647572838}
+  _shotCooldown: 0.3
+  _firePosition: {fileID: 4472663078901238}
+  _shotEffects: {fileID: 114401543647572838}
 --- !u!114 &114601510622814768
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3258,7 +3258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 275cf6ceb7d825945895b7ee1af47849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onToggleShared:
+  _onToggleShared:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 136603385438737540}
@@ -3317,7 +3317,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: ToggleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  onToggleLocal:
+  _onToggleLocal:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114003178005889542}
@@ -3343,7 +3343,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: ToggleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  onToggleRemote:
+  _onToggleRemote:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114820343278880866}
@@ -3358,7 +3358,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: ToggleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  respawnTime: 5
+  _respawnTime: 5
 --- !u!114 &114639923063698534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3402,10 +3402,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d20aa789b6a82408689406bffb9832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minRadius: 0.3
+  maxRadius: 1
+  saturation: 1
   _shader: {fileID: 4800000, guid: 4bad137ed4d1d7d4881c33ab6ac80ed7, type: 3}
-  MinRadius: 0.3
-  MaxRadius: 1
-  Saturation: 1
 --- !u!114 &114742742197960214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3436,9 +3436,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6f859889905c364a86fd0525bc9315b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnOnDelay: 0.1
-  turnOffDelay: 3.5
-  enabledOnLoad: 0
+  _turnOnDelay: 0.1
+  _turnOffDelay: 3.5
+  _enabledOnLoad: 0
 --- !u!114 &114861511706241102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3450,13 +3450,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1983a915836584884a528a8b5fc70a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 4442944352511588}
-  handMount: {fileID: 4879646688943230}
-  gunPivot: {fileID: 4147072253622998}
-  rightHandHold: {fileID: 4152268275290720}
-  leftHandHold: {fileID: 4308745521385506}
-  threshold: 10
-  smoothing: 5
+  _cameraTransform: {fileID: 4442944352511588}
+  _handMount: {fileID: 4879646688943230}
+  _gunPivot: {fileID: 4147072253622998}
+  _rightHandHold: {fileID: 4152268275290720}
+  _leftHandHold: {fileID: 4308745521385506}
+  _threshold: 10
+  _smoothing: 5
 --- !u!114 &114982930943558006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3739,7 +3739,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: -1861358577
+  randomSeed: 116876225
   InitialModule:
     serializedVersion: 3
     enabled: 1

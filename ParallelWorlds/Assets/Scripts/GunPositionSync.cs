@@ -5,31 +5,31 @@ using UnityEngine.Networking;
 
 public class GunPositionSync : NetworkBehaviour
 {
-    [SerializeField] Transform cameraTransform;
-    [SerializeField] Transform handMount;
-    [SerializeField] Transform gunPivot;
-    [SerializeField] Transform rightHandHold;
-    [SerializeField] Transform leftHandHold;
-    [SerializeField] float threshold = 10f;
-    [SerializeField] float smoothing = 5f;
+    [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private Transform _handMount;
+    [SerializeField] private Transform _gunPivot;
+    [SerializeField] private Transform _rightHandHold;
+    [SerializeField] private Transform _leftHandHold;
+    [SerializeField] private float _threshold = 10f;
+    [SerializeField] private float _smoothing = 5f;
 
+    [SyncVar] private float _pitch;
 
-    [SyncVar] float pitch;
-    Vector3 lastOffset;
-    float lastSyncedPitch;
-    Animator anim;
+    private Vector3 _lastOffset;
+    private float _lastSyncedPitch;
+    private Animator _anim;
 
     private void Start()
     {
-        anim = GetComponent<Animator>();
+        _anim = GetComponent<Animator>();
 
         if (isLocalPlayer)
         {
-            gunPivot.parent = cameraTransform;
+            _gunPivot.parent = _cameraTransform;
         }
         else
         {
-            lastOffset = handMount.position - transform.position;
+            _lastOffset = _handMount.position - transform.position;
         }
     }
 
@@ -37,54 +37,54 @@ public class GunPositionSync : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            pitch = cameraTransform.localRotation.eulerAngles.x;
-            if (Mathf.Abs(lastSyncedPitch - pitch) >= threshold)
+            _pitch = _cameraTransform.localRotation.eulerAngles.x;
+            if (Mathf.Abs(_lastSyncedPitch - _pitch) >= _threshold)
             {
-                CmdUpdatePitch(pitch);
-                lastSyncedPitch = pitch;
+                CmdUpdatePitch(_pitch);
+                _lastSyncedPitch = _pitch;
             }
         }
         else
         {
-            Quaternion newRotation = Quaternion.Euler(pitch, 0f, 0f);
+            Quaternion newRotation = Quaternion.Euler(_pitch, 0f, 0f);
 
-            Vector3 currentOffset = handMount.position - transform.position;
-            gunPivot.localPosition += currentOffset - lastOffset;
-            lastOffset = currentOffset;
+            Vector3 currentOffset = _handMount.position - transform.position;
+            _gunPivot.localPosition += currentOffset - _lastOffset;
+            _lastOffset = currentOffset;
 
-            gunPivot.localRotation = Quaternion.Lerp(gunPivot.localRotation, newRotation, Time.deltaTime * smoothing);
+            _gunPivot.localRotation = Quaternion.Lerp(_gunPivot.localRotation, newRotation, Time.deltaTime * _smoothing);
         }
     }
 
     [Command]
-    void CmdUpdatePitch(float newPitch)
+    private void CmdUpdatePitch(float newPitch)
     {
-        pitch = newPitch;
+        _pitch = newPitch;
     }
 
     private void OnAnimatorIK(int layerIndex)
     {
-        if (null == anim)
+        if (null == _anim)
         {
             return;
         }
 
-        if (anim.GetCurrentAnimatorStateInfo(layerIndex).IsName("Base Layer.Death"))
+        if (_anim.GetCurrentAnimatorStateInfo(layerIndex).IsName("Base Layer.Death"))
         {
-            anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0f);
-            anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0f);
+            _anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0f);
+            _anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0f);
         }
-		else
-		{
-            anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
-            anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
-            anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandHold.position);
-            anim.SetIKRotation(AvatarIKGoal.RightHand, rightHandHold.rotation);
+        else
+        {
+            _anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
+            _anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
+            _anim.SetIKPosition(AvatarIKGoal.RightHand, _rightHandHold.position);
+            _anim.SetIKRotation(AvatarIKGoal.RightHand, _rightHandHold.rotation);
 
-			anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
-            anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
-            anim.SetIKPosition(AvatarIKGoal.LeftHand, leftHandHold.position);
-            anim.SetIKRotation(AvatarIKGoal.LeftHand, leftHandHold.rotation);
-		}
+            _anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
+            _anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
+            _anim.SetIKPosition(AvatarIKGoal.LeftHand, _leftHandHold.position);
+            _anim.SetIKRotation(AvatarIKGoal.LeftHand, _leftHandHold.rotation);
+        }
     }
 }
