@@ -15,7 +15,7 @@ public class PlayerUniverse : NetworkBehaviour
 {
     public static PlayerUniverse localPlayerUniverse;
 
-    [SyncVar(hook = "OnPlayerUniverseStateChange")] public UniverseState playerUniverseState;
+    [SyncVar(hook = "OnPlayerUniverseStateChange")] public UniverseState universeState;
 
     [SerializeField] private UniverseChangeEvent _onSwitchUniverseShared;
 
@@ -51,26 +51,14 @@ public class PlayerUniverse : NetworkBehaviour
         else
         {
             localPlayerUniverse = this;
-            this.AddObserver(OnLocalPlayerUniverseChanged, "OnLocalPlayerUniverseChanged");
-        }
-    }
-
-    private void OnLocalPlayerUniverseChanged(object sender, object args)
-    {
-        if (localPlayerUniverse != null)
-        {
-            _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(playerUniverseState, localPlayerUniverse.playerUniverseState));
-        }
-        else
-        {
-            _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(playerUniverseState));
+            this.AddObserver(OnLocalPlayerUniverseChanged, Constants.Notification.OnLocalPlayerUniverseChanged);
         }
     }
 
     [ServerCallback]
     private void OnEnable()
     {
-        playerUniverseState = new UniverseState(
+        universeState = new UniverseState(
             UniverseController.Instance.GetSpawnUniverse(),
             UniverseState.TransitionState.Normal
         );
@@ -80,7 +68,7 @@ public class PlayerUniverse : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            this.RemoveObserver(OnLocalPlayerUniverseChanged, "OnLocalPlayerUniverseChanged");
+            this.RemoveObserver(OnLocalPlayerUniverseChanged, Constants.Notification.OnLocalPlayerUniverseChanged);
         }
     }
 
@@ -88,11 +76,18 @@ public class PlayerUniverse : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            if (playerUniverseState.transitionState == UniverseState.TransitionState.Normal && Input.GetMouseButtonDown(1))
+            if (universeState.transitionState == UniverseState.TransitionState.Normal && Input.GetMouseButtonDown(1))
             {
                 CmdStartSwapToOppositeUniverse();
             }
         }
+    }
+
+    // --------------- NOTIFICATIONS ---------------
+
+    private void OnLocalPlayerUniverseChanged(object sender, object args)
+    {
+        NotifyUniverseUpdate();
     }
 
     // --------------- COMMANDS ---------------
@@ -101,8 +96,8 @@ public class PlayerUniverse : NetworkBehaviour
     private void CmdStartSwapToOppositeUniverse()
     {
         Debug.Log("CmdStartSwapToOppositeUniverse Sent");
-        playerUniverseState = new UniverseState(
-            playerUniverseState.universe,
+        universeState = new UniverseState(
+            universeState.universe,
             UniverseState.TransitionState.SwapOut
         );
     }
@@ -111,8 +106,8 @@ public class PlayerUniverse : NetworkBehaviour
     private void CmdSwapToOppositeUniverse()
     {
         Debug.Log("CmdSwapToOppositeUniverse Sent");
-        playerUniverseState = new UniverseState(
-            UniverseController.Instance.GetOppositeUniverse(playerUniverseState.universe),
+        universeState = new UniverseState(
+            UniverseController.Instance.GetOppositeUniverse(universeState.universe),
             UniverseState.TransitionState.SwapIn
         );
     }
@@ -121,14 +116,14 @@ public class PlayerUniverse : NetworkBehaviour
     private void CmdStopSwapToOppositeUniverse()
     {
         Debug.Log("CmdStopSwapToOppositeUniverse Sent");
-        playerUniverseState = new UniverseState(
-            playerUniverseState.universe,
+        universeState = new UniverseState(
+            universeState.universe,
             UniverseState.TransitionState.Normal
         );
 
         // I need to switch universe here too, because the server must be sync in order to perform
         // raycasts correctly
-        _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(playerUniverseState));
+        _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(universeState));
     }
 
     // --------------- HOOKS ---------------
@@ -139,7 +134,7 @@ public class PlayerUniverse : NetworkBehaviour
     {
         
         Debug.Log("OnPlayerUniverseStateChange Hook");
-        playerUniverseState = universeState;
+        this.universeState = universeState;
 
         UpdatePlayerUniverse();
     }
@@ -150,30 +145,39 @@ public class PlayerUniverse : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            this.PostNotification("OnLocalPlayerUniverseChanged");
+            this.PostNotification(Constants.Notification.OnLocalPlayerUniverseChanged);
         }
 
         ResetSwapEffect();
 
+        NotifyUniverseUpdate();
+
+        if (universeState.transitionState == UniverseState.TransitionState.SwapOut)
+        {
+            Debug.Log("Player net ID: " + netId + "swapping out of universe: " + universeState.universe);
+            StartCoroutine("SwapOutAsync");
+        }
+        else if (universeState.transitionState == UniverseState.TransitionState.SwapIn)
+        {
+            Debug.Log("Player net ID: " + netId + " swapping in universe: " + universeState.universe);
+
+            StartCoroutine("SwapInAsync");
+        }
+    }
+
+    /// <summary>
+	/// Updates all layers of the player's gameobjects (considering both local player and current player),
+    /// set the camera cullmask and layermask for shooting raycast.
+	/// </summary>
+    private void NotifyUniverseUpdate()
+    {
         if (localPlayerUniverse != null)
         {
-            _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(playerUniverseState, localPlayerUniverse.playerUniverseState));
+            _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(universeState, localPlayerUniverse.universeState));
         }
         else
         {
-            _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(playerUniverseState));
-        }
-
-        if (playerUniverseState.transitionState == UniverseState.TransitionState.SwapOut)
-        {
-            Debug.Log("Player net ID: " + netId + "swapping out of universe: " + playerUniverseState.universe);
-            StartCoroutine("SwapOutAsync");
-        }
-        else if (playerUniverseState.transitionState == UniverseState.TransitionState.SwapIn)
-        {
-            Debug.Log("Player net ID: " + netId + " swapping in universe: " + playerUniverseState.universe);
-
-            StartCoroutine("SwapInAsync");
+            _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(universeState));
         }
     }
 
@@ -184,7 +188,7 @@ public class PlayerUniverse : NetworkBehaviour
         StopCoroutine("SwapOutAsync");
         StopCoroutine("SwapInAsync");
 
-        if (playerUniverseState.transitionState == UniverseState.TransitionState.SwapOut)
+        if (universeState.transitionState == UniverseState.TransitionState.SwapOut)
         {
             ApplyEffectLocal(_swapTime);
             ApplyEffectRemote(_swapTime, false);
@@ -213,7 +217,7 @@ public class PlayerUniverse : NetworkBehaviour
             {
                 if (localPlayerUniverse != null)
                 {
-                    if (playerUniverseState.universe == localPlayerUniverse.playerUniverseState.universe)
+                    if (universeState.universe == localPlayerUniverse.universeState.universe)
                     {
                         ApplyEffectRemote(t, true);
                     }
@@ -245,7 +249,7 @@ public class PlayerUniverse : NetworkBehaviour
             {
                 if (localPlayerUniverse != null)
                 {
-                    if (playerUniverseState.universe == localPlayerUniverse.playerUniverseState.universe)
+                    if (universeState.universe == localPlayerUniverse.universeState.universe)
                     {
                         ApplyEffectRemote(t, false);
                     }

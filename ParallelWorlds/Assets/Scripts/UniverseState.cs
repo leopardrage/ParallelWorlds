@@ -43,7 +43,7 @@ public struct UniverseLayerSettings
     private int GetLayer(UniverseState currentUniverseState)
     {
         // Both visual and physics set to the current universe
-        return (currentUniverseState.universe == Universe.UniverseA) ? 8 : 9;
+        return (currentUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseA) : LayerNameToIndex(Constants.Layer.UniverseB);
     }
     private int GetLayer(UniverseState currentUniverseState, UniverseState localUniverseState)
     {
@@ -51,7 +51,7 @@ public struct UniverseLayerSettings
         if (currentUniverseState.transitionState == UniverseState.TransitionState.Normal)
         {
             // Both visual and physics set to the current universe
-            return (currentUniverseState.universe == Universe.UniverseA) ? 8 : 9;
+            return (currentUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseA) : LayerNameToIndex(Constants.Layer.UniverseB);
         }
         // Swapping
         else
@@ -60,13 +60,13 @@ public struct UniverseLayerSettings
             if (localUniverseState.universe == currentUniverseState.universe)
             {
                 // Both visual and physics set to the current universe
-                return (currentUniverseState.universe == Universe.UniverseA) ? 8 : 9;
+                return (currentUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseA) : LayerNameToIndex(Constants.Layer.UniverseB);
             }
             // Different universe from the Local Player:
             else
             {
                 // Physics set to the current universe but visual set to match the local player's
-                return (localUniverseState.universe == Universe.UniverseA) ? 10 : 11;
+                return (localUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseAcollisionB) : LayerNameToIndex(Constants.Layer.UniverseBcollisionA);
             }
         }
     }
@@ -75,11 +75,11 @@ public struct UniverseLayerSettings
     {
         if (currentUniverseState.universe == Universe.UniverseA)
         {
-            return LayerMask.GetMask("Universe_A", "Universe_A_Collision_B");
+            return LayerMask.GetMask(Constants.Layer.UniverseA, Constants.Layer.UniverseAcollisionB);
         }
         else
         {
-            return LayerMask.GetMask("Universe_B", "Universe_B_Collision_A");
+            return LayerMask.GetMask(Constants.Layer.UniverseB, Constants.Layer.UniverseBcollisionA);
         }
     }
 
@@ -87,11 +87,16 @@ public struct UniverseLayerSettings
     {
         if (currentUniverseState.universe == Universe.UniverseA)
         {
-            return LayerMask.GetMask("Universe_A", "Universe_B_Collision_A");
+            return LayerMask.GetMask(Constants.Layer.UniverseA, Constants.Layer.UniverseBcollisionA);
         }
         else
         {
-            return LayerMask.GetMask("Universe_B", "Universe_A_Collision_B");
+            return LayerMask.GetMask(Constants.Layer.UniverseB, Constants.Layer.UniverseAcollisionB);
         }
+    }
+
+    private int LayerNameToIndex(string layerName)
+    {
+        return Mathf.RoundToInt(Mathf.Log(LayerMask.NameToLayer(layerName), 2));
     }
 }
