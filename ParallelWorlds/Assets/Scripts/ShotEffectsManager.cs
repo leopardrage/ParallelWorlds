@@ -8,6 +8,7 @@ public class ShotEffectsManager : MonoBehaviour
 	[SerializeField] GameObject impactPrefab;
 
 	ParticleSystem impactEffect;
+	int universeLayer;
 
 	//Create the impact effect for our shots
 	public void Initialize()
@@ -15,6 +16,7 @@ public class ShotEffectsManager : MonoBehaviour
 		if (impactPrefab != null) {
 			impactEffect = Instantiate(impactPrefab).GetComponent<ParticleSystem>();
 		}
+		UpdateUniverseSettings();
 	}
 
 	//Play muzzle flash and audio
@@ -37,6 +39,20 @@ public class ShotEffectsManager : MonoBehaviour
 			impactEffect.transform.position = impactPosition;   
 			impactEffect.Stop ();
 			impactEffect.Play ();
+		}
+	}
+
+	public void SetUniverseSettings(UniverseLayerSettings universe)
+    {
+        universeLayer = universe.layer;
+		UpdateUniverseSettings();
+    }
+
+	private void UpdateUniverseSettings()
+	{
+		if (impactEffect != null)
+		{
+			impactEffect.gameObject.layer = universeLayer;
 		}
 	}
 }

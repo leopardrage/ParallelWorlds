@@ -126,7 +126,6 @@ GameObject:
   - component: {fileID: 4716166768585134}
   - component: {fileID: 143482130563723962}
   - component: {fileID: 114003178005889542}
-  - component: {fileID: 54781074187275392}
   - component: {fileID: 82775931406755176}
   - component: {fileID: 136603385438737540}
   - component: {fileID: 114982930943558006}
@@ -2704,21 +2703,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1108415884097334}
   m_Mesh: {fileID: 4300002, guid: fddeeac0ebed86c4cab4320764b5c227, type: 3}
---- !u!54 &54781074187275392
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1073867557417454}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!81 &81054680649176634
 AudioListener:
   m_ObjectHideFlags: 1
@@ -3012,6 +2996,17 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 114514107319803694}
+        m_MethodName: SetUniverseSettings
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 114401543647572838}
         m_MethodName: SetUniverseSettings
         m_Mode: 0
         m_Arguments:
@@ -3663,7 +3658,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: 1608554701
+  randomSeed: 506396114
   InitialModule:
     serializedVersion: 3
     enabled: 1
