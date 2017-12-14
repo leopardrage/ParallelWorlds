@@ -28,16 +28,19 @@ public struct UniverseLayerSettings
 {
     public int layer;
     public LayerMask cullingMask;
+    public LayerMask shootMask;
 
     public UniverseLayerSettings(PlayerUniverseState currentUniverseState) : this()
     {
         this.layer = GetLayer(currentUniverseState);
         this.cullingMask = GetCullMask(currentUniverseState);
+        this.shootMask = GetShootMask(currentUniverseState);
     }
     public UniverseLayerSettings(PlayerUniverseState currentUniverseState, PlayerUniverseState localUniverseState) : this()
     {
         this.layer = GetLayer(currentUniverseState, localUniverseState);
         this.cullingMask = GetCullMask(currentUniverseState);
+        this.shootMask = GetShootMask(currentUniverseState);
     }
 
     private int GetLayer(PlayerUniverseState currentUniverseState)
@@ -80,6 +83,18 @@ public struct UniverseLayerSettings
         else
         {
             return LayerMask.GetMask("Universe_B", "Universe_B_Collision_A");
+        }
+    }
+
+    private LayerMask GetShootMask(PlayerUniverseState currentUniverseState)
+    {
+        if (currentUniverseState.universe == Universe.UniverseA)
+        {
+            return LayerMask.GetMask("Universe_A", "Universe_B_Collision_A");
+        }
+        else
+        {
+            return LayerMask.GetMask("Universe_B", "Universe_A_Collision_B");
         }
     }
 }

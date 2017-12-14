@@ -14,6 +14,8 @@ public class PlayerShooting : NetworkBehaviour
 	float ellapsedTime;
 	bool canShoot;
 
+	LayerMask shootMask;
+
 	void Start ()
 	{
 		shotEffects.Initialize ();
@@ -56,8 +58,8 @@ public class PlayerShooting : NetworkBehaviour
 
 		Ray ray = new Ray (origin, direction);
 		Debug.DrawRay (ray.origin, ray.direction * 3f, Color.red, 1f);
-
-		bool result = Physics.Raycast (ray, out hit, 50f);
+		
+		bool result = Physics.Raycast (ray, out hit, 50f, shootMask);
 
 		if (result) 
 		{
@@ -96,4 +98,11 @@ public class PlayerShooting : NetworkBehaviour
 			PlayerCanvas.canvas.SetKills (value);
 		}
 	}
+
+	// ------------------ Universe stuff ------------------
+
+	public void SetUniverseSettings(UniverseLayerSettings universe)
+    {
+        shootMask = universe.shootMask;
+    }
 }
