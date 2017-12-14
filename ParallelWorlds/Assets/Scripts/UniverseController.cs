@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum Universe
+{
+    UniverseUndefined,
+    UniverseA,
+    UniverseB
+};
+
 public class UniverseController : MonoBehaviour
 {
     private enum UniversePickMode
@@ -25,16 +32,9 @@ public class UniverseController : MonoBehaviour
         }
     }
 
-    public static bool Swapping
-    {
-        get; private set;
-    }
-
-    [SerializeField] private LayerMask UniverseA;
-    [SerializeField] private LayerMask UniverseB;
     [SerializeField] private UniversePickMode universePickMode;
 
-    private LayerMask lastUniverse;
+    private Universe lastUniverse = Universe.UniverseUndefined;
 
     [SerializeField] private int _additiveSceneBuildIndex;
 
@@ -43,24 +43,24 @@ public class UniverseController : MonoBehaviour
         SceneManager.LoadScene(_additiveSceneBuildIndex, LoadSceneMode.Additive);
     }
 
-    public int GetSpawnUniverse()
+    public Universe GetSpawnUniverse()
     {
-        int universe = 0;
+        Universe universe = 0;
         switch (universePickMode)
         {
             case UniversePickMode.Random:
-                universe = ((Random.Range(0, 2) == 0) ? UniverseController.Instance.UniverseA : UniverseController.Instance.UniverseB).value;
+                universe = ((Random.Range(0, 2) == 0) ? Universe.UniverseA : Universe.UniverseB);
                 break;
             case UniversePickMode.RoundRobin:
-                lastUniverse = ((lastUniverse == UniverseController.Instance.UniverseB) ? UniverseController.Instance.UniverseA : UniverseController.Instance.UniverseB);
-                universe = lastUniverse.value;
+                lastUniverse = ((lastUniverse == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB);
+                universe = lastUniverse;
                 break;
         }
         return universe;
     }
 
-    public int GetOppositeUniverse(int currentUniverse)
+    public Universe GetOppositeUniverse(Universe currentUniverse)
     {
-        return ((currentUniverse == UniverseController.Instance.UniverseB) ? UniverseController.Instance.UniverseA : UniverseController.Instance.UniverseB).value;
+        return ((currentUniverse == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB);
     }
 }

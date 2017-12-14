@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class UniverseSetter : MonoBehaviour
 {
-    public void SetUniverse(int universe)
+    public void SetUniverseSettings(UniverseLayerSettings universe)
     {
-        int universeLayer = (int)Mathf.Log(universe, 2);
-        SetLayerRecursively(gameObject, universeLayer);
+        SetLayerRecursively(gameObject, universe.layer);
     }
 
     // ------------- UTILITY ---------------
