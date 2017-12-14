@@ -10,6 +10,8 @@ public interface IUniverseObserver
 
 [System.Serializable]
 public class UniverseChangeEvent : UnityEvent<UniverseLayerSettings> { }
+[System.Serializable]
+public class UniverseTransitionEvent : UnityEvent<float, float, UniverseState> { }
 
 public class PlayerUniverse : NetworkBehaviour
 {
@@ -18,6 +20,7 @@ public class PlayerUniverse : NetworkBehaviour
     [SyncVar(hook = "OnPlayerUniverseStateChange")] public UniverseState universeState;
 
     [SerializeField] private UniverseChangeEvent _onSwitchUniverseShared;
+    [SerializeField] private UniverseTransitionEvent _onTransitionUpdateRemote;
 
     [Header("Swap Effect Stuff")]
     [SerializeField] private Vignette _vignette;
@@ -33,6 +36,7 @@ public class PlayerUniverse : NetworkBehaviour
 
     private AudioSource _audio;
     private readonly float _swapTime = 0.85f;
+    private readonly float _transitionTime = 1.0f;
 
     private void Awake()
     {
@@ -190,13 +194,25 @@ public class PlayerUniverse : NetworkBehaviour
 
         if (universeState.transitionState == UniverseState.TransitionState.SwapOut)
         {
-            ApplyEffectLocal(_swapTime);
-            ApplyEffectRemote(_swapTime, false);
+            if (isLocalPlayer)
+            {
+                ApplyEffectLocal(_swapTime);
+            }
+            else
+            {
+                _onTransitionUpdateRemote.Invoke(_swapTime, _transitionTime, universeState);
+            }
         }
         else
         {
-            ApplyEffectLocal(1.0f);
-            ApplyEffectRemote(1.0f, false);
+            if (isLocalPlayer)
+            {
+                ApplyEffectLocal(1.0f);
+            }
+            else
+            {
+                _onTransitionUpdateRemote.Invoke(1.0f, _transitionTime, universeState);
+            }
         }
     }
 
@@ -215,17 +231,7 @@ public class PlayerUniverse : NetworkBehaviour
             }
             else
             {
-                if (localPlayerUniverse != null)
-                {
-                    if (universeState.universe == localPlayerUniverse.universeState.universe)
-                    {
-                        ApplyEffectRemote(t, true);
-                    }
-                    else
-                    {
-                        ApplyEffectRemote(t, false);
-                    }
-                }
+                _onTransitionUpdateRemote.Invoke(t, _transitionTime, universeState);
             }
 
             yield return null;
@@ -239,7 +245,7 @@ public class PlayerUniverse : NetworkBehaviour
 
     private IEnumerator SwapInAsync()
     {
-        for (float t = _swapTime; t < 1.0f; t += Time.unscaledDeltaTime * 1.2f)
+        for (float t = _swapTime; t < _transitionTime; t += Time.unscaledDeltaTime * 1.2f)
         {
             if (isLocalPlayer)
             {
@@ -247,17 +253,7 @@ public class PlayerUniverse : NetworkBehaviour
             }
             else
             {
-                if (localPlayerUniverse != null)
-                {
-                    if (universeState.universe == localPlayerUniverse.universeState.universe)
-                    {
-                        ApplyEffectRemote(t, false);
-                    }
-                    else
-                    {
-                        ApplyEffectRemote(t, true);
-                    }
-                }
+                _onTransitionUpdateRemote.Invoke(t, _transitionTime, universeState);
             }
 
             yield return null;
@@ -275,17 +271,5 @@ public class PlayerUniverse : NetworkBehaviour
         _vignette.minRadius = _innerVignette.Evaluate(t);
         _vignette.maxRadius = _outerVignette.Evaluate(t);
         _vignette.saturation = _saturation.Evaluate(t);
-    }
-
-    private void ApplyEffectRemote(float t, bool reverse)
-    {
-        if (_body != null)
-        {
-            _body.ApplyEffect(t, reverse);
-        }
-        if (_gun != null)
-        {
-            _gun.ApplyEffect(t, reverse);
-        }
     }
 }

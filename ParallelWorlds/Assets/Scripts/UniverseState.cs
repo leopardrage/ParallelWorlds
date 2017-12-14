@@ -43,7 +43,7 @@ public struct UniverseLayerSettings
     private int GetLayer(UniverseState currentUniverseState)
     {
         // Both visual and physics set to the current universe
-        return (currentUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseA) : LayerNameToIndex(Constants.Layer.UniverseB);
+        return (currentUniverseState.universe == Universe.UniverseA) ? LayerMask.NameToLayer(Constants.Layer.UniverseA) : LayerMask.NameToLayer(Constants.Layer.UniverseB);
     }
     private int GetLayer(UniverseState currentUniverseState, UniverseState localUniverseState)
     {
@@ -51,7 +51,7 @@ public struct UniverseLayerSettings
         if (currentUniverseState.transitionState == UniverseState.TransitionState.Normal)
         {
             // Both visual and physics set to the current universe
-            return (currentUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseA) : LayerNameToIndex(Constants.Layer.UniverseB);
+            return (currentUniverseState.universe == Universe.UniverseA) ? LayerMask.NameToLayer(Constants.Layer.UniverseA) : LayerMask.NameToLayer(Constants.Layer.UniverseB);
         }
         // Swapping
         else
@@ -60,13 +60,13 @@ public struct UniverseLayerSettings
             if (localUniverseState.universe == currentUniverseState.universe)
             {
                 // Both visual and physics set to the current universe
-                return (currentUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseA) : LayerNameToIndex(Constants.Layer.UniverseB);
+                return (currentUniverseState.universe == Universe.UniverseA) ? LayerMask.NameToLayer(Constants.Layer.UniverseA) : LayerMask.NameToLayer(Constants.Layer.UniverseB);
             }
             // Different universe from the Local Player:
             else
             {
                 // Physics set to the current universe but visual set to match the local player's
-                return (localUniverseState.universe == Universe.UniverseA) ? LayerNameToIndex(Constants.Layer.UniverseAcollisionB) : LayerNameToIndex(Constants.Layer.UniverseBcollisionA);
+                return (localUniverseState.universe == Universe.UniverseA) ? LayerMask.NameToLayer(Constants.Layer.UniverseAcollisionB) : LayerMask.NameToLayer(Constants.Layer.UniverseBcollisionA);
             }
         }
     }
@@ -93,10 +93,5 @@ public struct UniverseLayerSettings
         {
             return LayerMask.GetMask(Constants.Layer.UniverseB, Constants.Layer.UniverseAcollisionB);
         }
-    }
-
-    private int LayerNameToIndex(string layerName)
-    {
-        return Mathf.RoundToInt(Mathf.Log(LayerMask.NameToLayer(layerName), 2));
     }
 }

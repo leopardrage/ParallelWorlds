@@ -10,26 +10,41 @@ public class SwapEffectRemote : MonoBehaviour
     }
 
     //Will be used to change the color of the players for different options
-    public void ApplyEffect(float t, bool reverse)
+    public void OnSwapTransitionUpdate(float t, float transitionTime, UniverseState universeState)
     {
         // Check needed in case it is called before Awake by another script's
         // Awake or OnEnable method (because Unity call Awake, OnEnable and then
         // go for another script...)
         if (_renderers != null)
         {
-            for (int i = 0; i < _renderers.Length; i++)
+            if (PlayerUniverse.localPlayerUniverse != null)
             {
-                foreach (Material material in _renderers[i].materials)
+                float progress = 0.0f;
+                if (universeState.transitionState == UniverseState.TransitionState.Normal)
                 {
-                    if (reverse)
+                    progress = 1.0f;
+                }
+                else
+                {
+                    bool fadeIn = false;
+                    if (universeState.transitionState == UniverseState.TransitionState.SwapOut)
                     {
-                        material.SetFloat("_Progress", 1.0f - t);
-                    }
-                    else
+                        fadeIn = (universeState.universe != PlayerUniverse.localPlayerUniverse.universeState.universe);
+                    } 
+                    else if (universeState.transitionState == UniverseState.TransitionState.SwapIn)
                     {
-                        material.SetFloat("_Progress", t);
+                        fadeIn = (universeState.universe == PlayerUniverse.localPlayerUniverse.universeState.universe);
                     }
-                };
+                    progress = (fadeIn) ? t / transitionTime : (transitionTime - t) / transitionTime;
+                }
+
+                for (int i = 0; i < _renderers.Length; i++)
+                {
+                    foreach (Material material in _renderers[i].materials)
+                    {
+                        material.SetFloat("_Progress", progress);
+                    };
+                }
             }
         }
     }
