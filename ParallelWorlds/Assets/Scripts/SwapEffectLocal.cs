@@ -29,6 +29,7 @@ public class SwapEffectLocal : MonoBehaviour
     {
         float progress = t / transitionTime;
 
+        // If it's starting to swap out, play sound effect
         if (universeState.transitionState == UniverseState.TransitionState.SwapOut && progress < float.Epsilon)
         {
             _audio.PlayOneShot(_swapAudioClip);

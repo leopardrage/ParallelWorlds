@@ -19,9 +19,10 @@ public class SwapEffectRemote : MonoBehaviour
         {
             if (PlayerUniverse.localPlayerUniverse != null)
             {
-                float progress = 0.0f;
+                float progress = 0.0f; // 0 = fully invisible, 1 = fully visible
                 if (universeState.transitionState == UniverseState.TransitionState.Normal)
                 {
+                    // Fully visible in normal state
                     progress = 1.0f;
                 }
                 else

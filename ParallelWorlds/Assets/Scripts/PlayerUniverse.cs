@@ -13,11 +13,45 @@ public class UniverseChangeEvent : UnityEvent<UniverseLayerSettings> { }
 [System.Serializable]
 public class UniverseTransitionEvent : UnityEvent<float, float, UniverseState> { }
 
+/// <summary>
+/// This component handles the core logic of universe swapping.
+/// <remarks>
+/// <para>
+/// Universe swap happens in three steps
+/// </para>
+/// <para>
+/// 1) When the player sends the swap input, the universe state is changed to SwapOut from the current universe
+/// and a coroutine starts to update any effect related to the swapOut every frame;
+/// </para>
+/// <para>
+/// 2) When the coroutine reaches the swap time, the player effectively switch to the new universe, changing his
+/// layers, camera cullmask and raycast layers for shooting;
+/// </para>
+/// <para>
+/// 3) Right after that the universe state switch to SwapIn in the new universe and a second coroutine starts
+/// to update any effect related to the swapOut every frame.
+/// </para>
+/// <para>
+/// At the end, the status return to Normal in the new universe.
+/// </para>
+/// <para>
+/// IMPORTANT NOTE: to display lights correctly on all clients for a given remote player, his layers are not
+/// the same on every client, but are based on the current universe of the local player, so the user can see the
+/// the remote player shaded correctly by the lights of his universe.
+/// </para>
+/// <para>
+/// Example: let's assume player 1 is swapping Out from A to B (so he is still logically in universe A),
+/// player 2 is in universe A and player 3 in universe B. Player 1 will have layer UniverseA in the client where player 2 is local player,
+/// but will have layer UniverseBcollisionA (visible on B but with collisions still on A) in the client where player 3 is local player.
+/// </para>
+/// </remarks>
+/// </summary>
 public class PlayerUniverse : NetworkBehaviour
 {
+    // Helper variable to allow other classes to check the local player universe state
     public static PlayerUniverse localPlayerUniverse;
 
-    [SyncVar(hook = "OnPlayerUniverseStateChange")] public UniverseState universeState;
+    [SyncVar(hook = "OnPlayerUniverseStateChange")] public UniverseState universeState = new UniverseState(Universe.UniverseUndefined, UniverseState.TransitionState.Normal);
 
     [SerializeField] private UniverseChangeEvent _onSwitchUniverseShared;
     [SerializeField] private UniverseTransitionEvent _onTransitionUpdateLocal;
@@ -34,17 +68,20 @@ public class PlayerUniverse : NetworkBehaviour
         if (!isLocalPlayer)
         {
             UpdatePlayerUniverse();
+            // Register this remote for local player universe changes, so he can update his layers accordingly
+            this.AddObserver(OnLocalPlayerUniverseChanged, Constants.Notification.OnLocalPlayerUniverseChanged);
         }
         else
         {
             localPlayerUniverse = this;
-            this.AddObserver(OnLocalPlayerUniverseChanged, Constants.Notification.OnLocalPlayerUniverseChanged);
+            
         }
     }
 
     [ServerCallback]
     private void OnEnable()
     {
+        // Setup initial state. NOTE:
         universeState = new UniverseState(
             UniverseController.Instance.GetSpawnUniverse(),
             UniverseState.TransitionState.Normal
@@ -94,7 +131,7 @@ public class PlayerUniverse : NetworkBehaviour
     {
         Debug.Log("CmdSwapToOppositeUniverse Sent");
         universeState = new UniverseState(
-            UniverseController.Instance.GetOppositeUniverse(universeState.universe),
+            ((universeState.universe == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB),
             UniverseState.TransitionState.SwapIn
         );
     }
@@ -147,7 +184,6 @@ public class PlayerUniverse : NetworkBehaviour
         else if (universeState.transitionState == UniverseState.TransitionState.SwapIn)
         {
             Debug.Log("Player net ID: " + netId + " swapping in universe: " + universeState.universe);
-
             StartCoroutine("SwapInAsync");
         }
     }
@@ -164,6 +200,8 @@ public class PlayerUniverse : NetworkBehaviour
         }
         else
         {
+            // This happens if localPlayer is still not set or if it's server. Either way, it's fine to just set
+            // layers to UniverseA or UniverseB, based on the current universe.
             _onSwitchUniverseShared.Invoke(new UniverseLayerSettings(universeState));
         }
     }
@@ -198,10 +236,10 @@ public class PlayerUniverse : NetworkBehaviour
             }
         }
     }
-    
+
 	private IEnumerator SwapOutAsync()
     {
-        for (float t = 0; t < _swapTime; t += Time.unscaledDeltaTime * 1.2f)
+        for (float t = 0; t < _swapTime; t += Time.deltaTime * 1.2f)
         {
             if (isLocalPlayer)
             {
@@ -223,7 +261,7 @@ public class PlayerUniverse : NetworkBehaviour
 
     private IEnumerator SwapInAsync()
     {
-        for (float t = _swapTime; t < _transitionTime; t += Time.unscaledDeltaTime * 1.2f)
+        for (float t = _swapTime; t < _transitionTime; t += Time.deltaTime * 1.2f)
         {
             if (isLocalPlayer)
             {

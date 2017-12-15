@@ -51,6 +51,7 @@
 				half aspect = _MainTex_TexelSize.z / _MainTex_TexelSize.w;
 				half2 uv = (i.uv * 2 - 1);
 
+				// distance [0, 1] from the center of an oval inscribed in the rectangule given by _MainTex width and height (1 is on the border of the oval)
 				half dist = length(uv / aspect);
 
 				half vingette = smoothstep(_MinRadius, _MaxRadius, dist);

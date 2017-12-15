@@ -74,7 +74,6 @@
 			// Albedo comes from a texture tinted by color
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 			o.Albedo = c.rgb;
-			//o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
 			o.Normal = UnpackNormal (tex2D (_NormalMap, IN.uv_NormalMap));
 			o.Specular = tex2D (_SpecularMap, IN.uv_SpecularMap).rgb;
@@ -84,6 +83,7 @@
 			fixed dissolve = dissolveColor.r;
 			fixed progress = _Progress;
 
+			// Dissolve
 			fixed edge = lerp(dissolve + _Edge, dissolve - _Edge, progress);
 			fixed alpha = smoothstep(progress + _Edge, progress - _Edge, edge);
 

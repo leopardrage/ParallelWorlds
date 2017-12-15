@@ -10,6 +10,10 @@ public enum Universe
     UniverseB
 };
 
+/// <summery>
+/// This component load the universe B additively on the current scene and provide utility methods to obtain a new universe for a spawing player
+/// either randomly or using round robin logic.
+/// </summery>
 public class UniverseController : MonoBehaviour
 {
     private enum UniversePickMode
@@ -52,15 +56,10 @@ public class UniverseController : MonoBehaviour
                 universe = ((Random.Range(0, 2) == 0) ? Universe.UniverseA : Universe.UniverseB);
                 break;
             case UniversePickMode.RoundRobin:
-                _lastUniverse = ((_lastUniverse == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB);
+                _lastUniverse = ((_lastUniverse == Universe.UniverseA) ? Universe.UniverseB : Universe.UniverseA);
                 universe = _lastUniverse;
                 break;
         }
         return universe;
-    }
-
-    public Universe GetOppositeUniverse(Universe currentUniverse)
-    {
-        return ((currentUniverse == Universe.UniverseB) ? Universe.UniverseA : Universe.UniverseB);
     }
 }
