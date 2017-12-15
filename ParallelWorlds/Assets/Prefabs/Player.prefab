@@ -1042,6 +1042,8 @@ GameObject:
   - component: {fileID: 124066392844014914}
   - component: {fileID: 114737233416241764}
   - component: {fileID: 114086696126520512}
+  - component: {fileID: 114810844892434358}
+  - component: {fileID: 82422725937372088}
   m_Layer: 0
   m_Name: FirstPersonCharacter
   m_TagString: MainCamera
@@ -2791,6 +2793,86 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!82 &82422725937372088
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1791312087781328}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!82 &82775931406755176
 AudioSource:
   m_ObjectHideFlags: 1
@@ -3103,6 +3185,22 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UniverseChangeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  _onTransitionUpdateLocal:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114810844892434358}
+        m_MethodName: OnSwapTransitionUpdate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UniverseTransitionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   _onTransitionUpdateRemote:
     m_PersistentCalls:
       m_Calls:
@@ -3130,125 +3228,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UniverseTransitionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _vignette: {fileID: 114737233416241764}
-  _camera: {fileID: 20527900932463432}
-  _innerVignette:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0.29938507
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.7987183
-      value: -0.00021917
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.89977014
-      value: 0.35016596
-      inSlope: 1.3204906
-      outSlope: 1.3204906
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 0.29499054
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  _outerVignette:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.8012805
-      value: 0.7999004
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.8997496
-      value: 1.04936
-      inSlope: 1.3171619
-      outSlope: 1.3171619
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  _saturation:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.79971296
-      value: 0.00062377006
-      inSlope: 0.01707306
-      outSlope: 0.01707306
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  _fov:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: -0.00024382956
-      value: 59.943474
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.80001277
-      value: 115.77233
-      inSlope: -0.032775417
-      outSlope: -0.032775417
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.8982267
-      value: 50.657234
-      inSlope: -459.372
-      outSlope: -459.372
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.9989624
-      value: 60.260563
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  _swapAudioClip: {fileID: 8300000, guid: a8237a7582737af4d978168fe5d1889d, type: 3}
-  _body: {fileID: 114042393787281986}
-  _gun: {fileID: 114474828730234368}
 --- !u!114 &114474828730234368
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3452,6 +3431,134 @@ MonoBehaviour:
   param3: 
   param4: 
   param5: 
+--- !u!114 &114810844892434358
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1791312087781328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72a40d9874bed442b89cbc1ffb890c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 20527900932463432}
+  _vignette: {fileID: 114737233416241764}
+  _innerVignette:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0.3002739
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.79998845
+      value: 0.00006058812
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.899682
+      value: 0.35039967
+      inSlope: -0.0035678714
+      outSlope: -0.0035678714
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0.30040598
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  _outerVignette:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.80050296
+      value: 0.79929143
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8992458
+      value: 1.0506043
+      inSlope: -0.0013342042
+      outSlope: -0.0013342042
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  _saturation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8000001
+      value: 0.00000011920929
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  _fov:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 60.008057
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.7994296
+      value: 100.00682
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9011815
+      value: 50.658108
+      inSlope: -299.14856
+      outSlope: -299.14856
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9999958
+      value: 60.00807
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  _swapAudioClip: {fileID: 8300000, guid: a8237a7582737af4d978168fe5d1889d, type: 3}
 --- !u!114 &114820343278880866
 MonoBehaviour:
   m_ObjectHideFlags: 1

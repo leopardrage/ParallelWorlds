@@ -20,28 +20,11 @@ public class PlayerUniverse : NetworkBehaviour
     [SyncVar(hook = "OnPlayerUniverseStateChange")] public UniverseState universeState;
 
     [SerializeField] private UniverseChangeEvent _onSwitchUniverseShared;
+    [SerializeField] private UniverseTransitionEvent _onTransitionUpdateLocal;
     [SerializeField] private UniverseTransitionEvent _onTransitionUpdateRemote;
 
-    [Header("Swap Effect Stuff")]
-    [SerializeField] private Vignette _vignette;
-    [SerializeField] private Camera _camera;
-    [SerializeField] private AnimationCurve _innerVignette;
-    [SerializeField] private AnimationCurve _outerVignette;
-    [SerializeField] private AnimationCurve _saturation;
-    [SerializeField] private AnimationCurve _fov;
-    [SerializeField] private AudioClip _swapAudioClip;
-    // TODO: remove (Just to test remote swap effect logic correctness)
-    [SerializeField] private SwapEffectRemote _body;
-    [SerializeField] private SwapEffectRemote _gun;
-
-    private AudioSource _audio;
     private readonly float _swapTime = 0.85f;
     private readonly float _transitionTime = 1.0f;
-
-    private void Awake()
-    {
-        _audio = GetComponent<AudioSource>();
-    }
 
     private void Start()
     {
@@ -87,11 +70,11 @@ public class PlayerUniverse : NetworkBehaviour
         }
     }
 
-    // --------------- NOTIFICATIONS ---------------
+    // --------------- NOTIFICATION CALLBACKS ---------------
 
     private void OnLocalPlayerUniverseChanged(object sender, object args)
     {
-        NotifyUniverseUpdate();
+        UpdateLayerSettings();
     }
 
     // --------------- COMMANDS ---------------
@@ -154,7 +137,7 @@ public class PlayerUniverse : NetworkBehaviour
 
         ResetSwapEffect();
 
-        NotifyUniverseUpdate();
+        UpdateLayerSettings();
 
         if (universeState.transitionState == UniverseState.TransitionState.SwapOut)
         {
@@ -173,7 +156,7 @@ public class PlayerUniverse : NetworkBehaviour
 	/// Updates all layers of the player's gameobjects (considering both local player and current player),
     /// set the camera cullmask and layermask for shooting raycast.
 	/// </summary>
-    private void NotifyUniverseUpdate()
+    private void UpdateLayerSettings()
     {
         if (localPlayerUniverse != null)
         {
@@ -196,7 +179,7 @@ public class PlayerUniverse : NetworkBehaviour
         {
             if (isLocalPlayer)
             {
-                ApplyEffectLocal(_swapTime);
+                _onTransitionUpdateLocal.Invoke(_swapTime, _transitionTime, universeState);
             }
             else
             {
@@ -207,7 +190,7 @@ public class PlayerUniverse : NetworkBehaviour
         {
             if (isLocalPlayer)
             {
-                ApplyEffectLocal(1.0f);
+                _onTransitionUpdateLocal.Invoke(1.0f, _transitionTime, universeState);
             }
             else
             {
@@ -215,19 +198,14 @@ public class PlayerUniverse : NetworkBehaviour
             }
         }
     }
-
-    /// <summary>
-	/// Controls a bunch of stuff like vingette and FoV over time and change the cullmask of the player's camera after a fixed duration.
-	/// </summary>
+    
 	private IEnumerator SwapOutAsync()
     {
-        _audio.PlayOneShot(_swapAudioClip);
-
         for (float t = 0; t < _swapTime; t += Time.unscaledDeltaTime * 1.2f)
         {
             if (isLocalPlayer)
             {
-                ApplyEffectLocal(t);
+                _onTransitionUpdateLocal.Invoke(t, _transitionTime, universeState);
             }
             else
             {
@@ -249,7 +227,7 @@ public class PlayerUniverse : NetworkBehaviour
         {
             if (isLocalPlayer)
             {
-                ApplyEffectLocal(t);
+                _onTransitionUpdateLocal.Invoke(t, _transitionTime, universeState);
             }
             else
             {
@@ -263,13 +241,5 @@ public class PlayerUniverse : NetworkBehaviour
         {
             CmdStopSwapToOppositeUniverse();
         }
-    }
-
-    private void ApplyEffectLocal(float t)
-    {
-        _camera.fieldOfView = _fov.Evaluate(t);
-        _vignette.minRadius = _innerVignette.Evaluate(t);
-        _vignette.maxRadius = _outerVignette.Evaluate(t);
-        _vignette.saturation = _saturation.Evaluate(t);
     }
 }
