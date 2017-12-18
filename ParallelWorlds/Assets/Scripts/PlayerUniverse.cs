@@ -100,7 +100,7 @@ public class PlayerUniverse : NetworkBehaviour
             if (universeState.transitionState == UniverseState.TransitionState.Normal && Input.GetMouseButtonDown(1))
             {
                 CmdStartSwapToOppositeUniverse();
-            }
+            }    
         }
     }
 
@@ -250,7 +250,7 @@ public class PlayerUniverse : NetworkBehaviour
             yield return null;
         }
 
-        if (isLocalPlayer)
+        if (isLocalPlayer || playerControllerId == -1)
         {
             CmdSwapToOppositeUniverse();
         }
@@ -272,9 +272,19 @@ public class PlayerUniverse : NetworkBehaviour
             yield return null;
         }
 
-        if (isLocalPlayer)
+        if (isLocalPlayer || playerControllerId == -1)
         {
             CmdStopSwapToOppositeUniverse();
+        }
+    }
+
+    // --------------- BOT STUFF ---------------
+
+    public void SwapUniverseForBot()
+    {
+        if (universeState.transitionState == UniverseState.TransitionState.Normal)
+        {
+            CmdStartSwapToOppositeUniverse();
         }
     }
 }

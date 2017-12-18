@@ -10,12 +10,14 @@ public class Bot : NetworkBehaviour
     [SerializeField] private float _shotCooldown = 1f;
 
     private PlayerShooting _playerShooting;
+    private PlayerUniverse _playerUniverse;
     private NetworkAnimator _anim;
     private float _ellapsedTime;
 
     private void Awake()
     {
         _playerShooting = GetComponent<PlayerShooting>();
+        _playerUniverse = GetComponent<PlayerUniverse>();
         _anim = GetComponent<NetworkAnimator>();
 
         GetComponent<Player>().playerName = "Bot";
@@ -56,6 +58,11 @@ public class Bot : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Keypad9))
         {
             _anim.SetTrigger("Restart");
+        }
+
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            _playerUniverse.SwapUniverseForBot();
         }
 
         BotAutoFire();
