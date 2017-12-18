@@ -23,18 +23,21 @@ public struct UniverseState
 [System.Serializable]
 public struct UniverseLayerSettings
 {
+    public Universe universe;
     public int layer;
     public LayerMask cullingMask;
     public LayerMask shootMask;
 
     public UniverseLayerSettings(UniverseState currentUniverseState) : this()
     {
+        this.universe = currentUniverseState.universe;
         this.layer = GetLayer(currentUniverseState);
         this.cullingMask = GetCullMask(currentUniverseState);
         this.shootMask = GetShootMask(currentUniverseState);
     }
     public UniverseLayerSettings(UniverseState currentUniverseState, UniverseState localUniverseState) : this()
     {
+        this.universe = currentUniverseState.universe;
         this.layer = GetLayer(currentUniverseState, localUniverseState);
         this.cullingMask = GetCullMask(currentUniverseState);
         this.shootMask = GetShootMask(currentUniverseState);

@@ -98,7 +98,7 @@
 				fixed avoid = 0.15f;
 				fixed distort = edgearound*alpha*avoid;
 				float2 cuv = lerp( IN.uv_MainTex, IN.uv_MainTex + distort - avoid, progress * _EdgeDistortion);
-				dissolveColor = tex2D(_MainTex, cuv);
+				dissolveColor = tex2D(_MainTex, cuv) * _Color;
 
 				//Edge Around Color
 				fixed3 ca = tex2D(_EdgeAroundRamp, fixed2(1-edgearound, 0)).rgb;

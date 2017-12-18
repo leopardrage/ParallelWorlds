@@ -6,16 +6,23 @@ using UnityEngine.Networking;
 public class PlayerShooting : NetworkBehaviour, IUniverseObserver
 {
     [SerializeField] private float _shotCooldown = .3f;
+    [SerializeField] private int _killToWin = 5;
     [SerializeField] private Transform _firePosition;
     [SerializeField] private ShotEffectsManager _shotEffects;
 
     [SyncVar(hook = "OnScoreChanged")] private int _score;
 
+    private Player _player;
     private float _ellapsedTime;
     private bool _canShoot;
     private LayerMask _shootMask;
 
-    void Start()
+    private void Awake()
+    {
+        _player = GetComponent<Player>();
+    }
+
+    private void Start()
     {
         _shotEffects.Initialize();
 
@@ -26,12 +33,12 @@ public class PlayerShooting : NetworkBehaviour, IUniverseObserver
     }
 
     [ServerCallback]
-    void OnEnable()
+    private void OnEnable()
     {
         _score = 0;
     }
 
-    void Update()
+    private void Update()
     {
         if (!_canShoot)
         {
@@ -51,7 +58,7 @@ public class PlayerShooting : NetworkBehaviour, IUniverseObserver
     }
 
     [Command]
-    void CmdFireShot(Vector3 origin, Vector3 direction)
+    private void CmdFireShot(Vector3 origin, Vector3 direction)
     {
         RaycastHit hit;
 
@@ -67,9 +74,9 @@ public class PlayerShooting : NetworkBehaviour, IUniverseObserver
             {
                 bool wasKillShot = enemy.TakeDamage();
 
-                if (wasKillShot)
+                if (wasKillShot && ++_score >= _killToWin)
                 {
-                    _score++;
+                    _player.Won();
                 }
             }
         }
@@ -78,7 +85,7 @@ public class PlayerShooting : NetworkBehaviour, IUniverseObserver
     }
 
     [ClientRpc]
-    void RpcProcessShotEffect(bool playImpact, Vector3 point)
+    private void RpcProcessShotEffect(bool playImpact, Vector3 point)
     {
         _shotEffects.PlayShotEffects();
 
@@ -88,7 +95,7 @@ public class PlayerShooting : NetworkBehaviour, IUniverseObserver
         }
     }
 
-    void OnScoreChanged(int value)
+    private void OnScoreChanged(int value)
     {
         _score = value;
 
@@ -96,6 +103,11 @@ public class PlayerShooting : NetworkBehaviour, IUniverseObserver
         {
             PlayerCanvas.canvas.SetKills(value);
         }
+    }
+
+    public void FireAsBot()
+    {
+        CmdFireShot(_firePosition.position, _firePosition.forward);
     }
 
     // ------------- IUniverseObserver ---------------

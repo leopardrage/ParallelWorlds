@@ -22,6 +22,11 @@ public class PlayerHealth : NetworkBehaviour
         _health = _maxHealth;
     }
 
+    private void Start()
+    {
+        OnHealthChanged(_health);
+    }
+
     // Ensure that this method will be called only by the server
     [Server]
     public bool TakeDamage()

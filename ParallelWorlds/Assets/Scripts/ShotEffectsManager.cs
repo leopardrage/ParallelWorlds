@@ -9,6 +9,7 @@ public class ShotEffectsManager : MonoBehaviour, IUniverseObserver
 
     private ParticleSystem _impactEffect;
     private int _universeLayer;
+    Universe _universe = Universe.UniverseUndefined;
 
     //Create the impact effect for our shots
     public void Initialize()
@@ -30,8 +31,12 @@ public class ShotEffectsManager : MonoBehaviour, IUniverseObserver
         }
         if (_gunAudio != null)
         {
-            _gunAudio.Stop();
-            _gunAudio.Play();
+            // Play audio only if in the same universe of the local player
+            if (PlayerUniverse.localPlayerUniverse != null && PlayerUniverse.localPlayerUniverse.universeState.universe == _universe)
+            {
+                _gunAudio.Stop();
+                _gunAudio.Play();
+            }
         }
     }
 
@@ -51,6 +56,7 @@ public class ShotEffectsManager : MonoBehaviour, IUniverseObserver
     public void SetUniverseSettings(UniverseLayerSettings universe)
     {
         _universeLayer = universe.layer;
+        _universe = universe.universe;
         UpdateUniverseSettings();
     }
 

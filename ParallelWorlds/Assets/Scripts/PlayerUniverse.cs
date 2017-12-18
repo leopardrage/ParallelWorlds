@@ -62,20 +62,17 @@ public class PlayerUniverse : NetworkBehaviour
 
     private void Start()
     {
-        // Initialize universe state for remote players (syncVar hooks are not called on variable initialization,
-        // so OnPlayerUniverseChange is not called for remote players who were already in game when localPlayer
-        // joined). 
         if (!isLocalPlayer)
         {
-            UpdatePlayerUniverse();
             // Register this remote for local player universe changes, so he can update his layers accordingly
             this.AddObserver(OnLocalPlayerUniverseChanged, Constants.Notification.OnLocalPlayerUniverseChanged);
         }
         else
         {
             localPlayerUniverse = this;
-            
         }
+        // Initialize universe state for all player (syncVar hooks are not called on variable initialization)
+        UpdatePlayerUniverse();
     }
 
     [ServerCallback]
@@ -156,7 +153,7 @@ public class PlayerUniverse : NetworkBehaviour
 
     private void OnPlayerUniverseStateChange(UniverseState universeState)
     {
-        
+
         Debug.Log("OnPlayerUniverseStateChange Hook");
         this.universeState = universeState;
 
@@ -237,7 +234,7 @@ public class PlayerUniverse : NetworkBehaviour
         }
     }
 
-	private IEnumerator SwapOutAsync()
+    private IEnumerator SwapOutAsync()
     {
         for (float t = 0; t < _swapTime; t += Time.deltaTime * 1.2f)
         {
