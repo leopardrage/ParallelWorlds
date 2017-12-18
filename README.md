@@ -9,8 +9,13 @@ Please note that this is just a tech demo of my knowledge in graphics programmin
 Here are the instructions to test the game on the same machine using a standalone build as a host and the Unity editor as a client:
 1. Open the project with Unity, **File->Build & Run**. Choose filename for your standalone build and hit **Save**
 2. Once done building, press **Play!** in the ParallelWorlds Configuration window;
-3. Hit **LAN Host(H)** on the game HUD.
-4. Back on Unity, open scene **Universe_A**, in Assets/_Scenes and press **play** on the editor. Once the game has started, press **LAN Client(C)** on the game HUD.
+3. Once the game is running, type a name for your game room under **CREATE A GAME** and press **CREATE**;
+4. (Optional) choose a color and a name for the hosting player;
+5. Back on Unity, open scene **Lobby**, in Assets/_Scenes and press **play** on the editor;
+6. Once the game is running, press **LIST SERVERS** and hit **JOIN** next to the game room you created.
+7. (Optional) choose a color and a name for the client player;
+8. In the lobby, press the **JOIN** button;
+9. On the standalone build, in the lobby, press the **JOIN** button;
 
 ## Techincal Notes:
 1. Both universes (as the worlds are called in code) exist at the same: the main scene (corrisponding to universe A) load additively universe B on awake. The universe swapping logic, located in the **PlayerUniverse** component, manages each player's universe state and handles the transition process between universes. *See comments on top of the PlayerUniverse class for more details*.
